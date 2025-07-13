@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>India Weather App</title>
+  <title>Maharashtra Weather App</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -170,30 +170,58 @@
       const [forecast, setForecast] = useState(null);
       const [hourlyData, setHourlyData] = useState(null);
       const [loading, setLoading] = useState(true);
-      const [selectedState, setSelectedState] = useState("Maharashtra");
-      const [selectedCity, setSelectedCity] = useState("Buldhana");
+      const [selectedDistrict, setSelectedDistrict] = useState("Buldhana");
+      const [selectedTown, setSelectedTown] = useState("Buldhana");
       const [lastUpdated, setLastUpdated] = useState("");
       const [activeTab, setActiveTab] = useState("daily");
 
-      const indiaCities = {
-        "Maharashtra": {
-          "Mumbai": { lat: 19.0760, lon: 72.8777 },
-          "Pune": { lat: 18.5204, lon: 73.8567 },
-          "Nagpur": { lat: 21.1458, lon: 79.0882 },
-          "Buldhana": { lat: 20.5287, lon: 76.1790 },
-          "Nashik": { lat: 20.0059, lon: 73.7918 },
-          "Aurangabad": { lat: 19.8762, lon: 75.3433 },
-          "Kolhapur": { lat: 16.7050, lon: 74.2433 }
-        },
-        "Karnataka": {
-          "Bangalore": { lat: 12.9716, lon: 77.5946 },
-          "Mysore": { lat: 12.2958, lon: 76.6394 },
-          "Hubli": { lat: 15.3647, lon: 75.1240 }
-        },
-        "Tamil Nadu": {
-          "Chennai": { lat: 13.0827, lon: 80.2707 },
-          "Coimbatore": { lat: 11.0168, lon: 76.9558 }
-        }
+      // Comprehensive list of Maharashtra districts and towns
+      const maharashtraTowns = {
+        // Vidarbha Region
+        "Buldhana": ["Buldhana", "Chikhli", "Malkapur", "Mehkar", "Khamgaon", "Shegaon", "Lonar"],
+        "Amravati": ["Amravati", "Achalpur", "Daryapur", "Anjangaon", "Chandurbazar"],
+        "Akola": ["Akola", "Akot", "Patur", "Balapur", "Telhara"],
+        "Washim": ["Washim", "Mangrulpir", "Karanja", "Risod"],
+        "Yavatmal": ["Yavatmal", "Pusad", "Umarkhed", "Digras", "Ghatanji"],
+        "Nagpur": ["Nagpur", "Katol", "Ramtek", "Umred", "Kalmeshwar"],
+        "Wardha": ["Wardha", "Arvi", "Hinganghat", "Pulgaon"],
+        "Chandrapur": ["Chandrapur", "Ballarpur", "Warora", "Bramhapuri"],
+        "Gadchiroli": ["Gadchiroli", "Aheri", "Sironcha", "Chamorshi"],
+        "Bhandara": ["Bhandara", "Tumsar", "Pauni", "Sakoli"],
+        "Gondia": ["Gondia", "Tirora", "Deori", "Amgaon"],
+        
+        // Marathwada Region
+        "Aurangabad": ["Aurangabad", "Khultabad", "Gangapur", "Sillod"],
+        "Jalna": ["Jalna", "Ambad", "Bhokardan", "Partur"],
+        "Parbhani": ["Parbhani", "Gangakhed", "Pathri", "Jintur"],
+        "Hingoli": ["Hingoli", "Kalamnuri", "Basmath", "Sengaon"],
+        "Nanded": ["Nanded", "Deglur", "Mukhed", "Kandhar"],
+        "Latur": ["Latur", "Ahmadpur", "Udgir", "Nilanga"],
+        "Osmanabad": ["Osmanabad", "Tuljapur", "Umarga", "Paranda"],
+        "Beed": ["Beed", "Georai", "Majalgaon", "Ashti", "Ambejogai"],
+        
+        // Khandesh Region
+        "Jalgaon": ["Jalgaon", "Bhusawal", "Chalisgaon", "Pachora", "Erandol"],
+        "Dhule": ["Dhule", "Shirpur", "Sakri", "Nardana"],
+        "Nandurbar": ["Nandurbar", "Shahada", "Taloda", "Navapur"],
+        
+        // Western Maharashtra
+        "Pune": ["Pune", "Baramati", "Bhor", "Daund", "Indapur", "Junnar"],
+        "Nashik": ["Nashik", "Malegaon", "Sinnar", "Igatpuri", "Niphad"],
+        "Ahmednagar": ["Ahmednagar", "Shrirampur", "Kopargaon", "Sangamner", "Shirdi"],
+        "Satara": ["Satara", "Wai", "Karad", "Patan", "Phaltan"],
+        "Sangli": ["Sangli", "Miraj", "Tasgaon", "Kavathemahankal"],
+        "Kolhapur": ["Kolhapur", "Ichalkaranji", "Shirol", "Gaganbawda"],
+        "Solapur": ["Solapur", "Barshi", "Pandharpur", "Malshiras", "Mohol"],
+        "Ratnagiri": ["Ratnagiri", "Chiplun", "Khed", "Dapoli", "Guhagar"],
+        "Sindhudurg": ["Sindhudurg", "Kankavli", "Malvan", "Vengurla", "Sawantwadi"],
+        "Raigad": ["Raigad", "Alibag", "Pen", "Mahad", "Mangaon"],
+        "Thane": ["Thane", "Kalyan", "Bhiwandi", "Murbad", "Shahapur"],
+        "Palghar": ["Palghar", "Vasai", "Dahanu", "Talasari", "Vikramgad"],
+        
+        // Special towns
+        "Mumbai": ["Mumbai", "Navi Mumbai"],
+        "Mumbai Suburban": ["Andheri", "Bandra", "Borivali", "Dahisar", "Kandivali"]
       };
 
       const getWeatherIcon = (code) => {
@@ -210,221 +238,4 @@
 
       const getDayName = (dateStr) => {
         const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { weekday: 'short' });
-      };
-
-      const formatTime = (timeStr) => {
-        const date = new Date(timeStr);
-        return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
-      };
-
-      useEffect(() => {
-        const fetchWeather = async () => {
-          setLoading(true);
-          try {
-            const { lat, lon } = indiaCities[selectedState][selectedCity] || 
-                              indiaCities["Maharashtra"]["Buldhana"];
-            
-            // Fetch current weather, daily forecast, and hourly data
-            const response = await fetch(
-              `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto`
-            );
-            const data = await response.json();
-            
-            // Process current weather
-            setWeather({
-              temp: data.current.temperature_2m,
-              humidity: data.current.relative_humidity_2m,
-              wind: data.current.wind_speed_10m,
-              weather_code: data.current.weather_code,
-              icon: getWeatherIcon(data.current.weather_code)
-            });
-            
-            // Process 7-day forecast
-            const dailyForecast = data.daily.time.map((day, index) => ({
-              date: day,
-              day: getDayName(day),
-              max_temp: data.daily.temperature_2m_max[index],
-              min_temp: data.daily.temperature_2m_min[index],
-              weather_code: data.daily.weather_code[index],
-              icon: getWeatherIcon(data.daily.weather_code[index])
-            }));
-            setForecast(dailyForecast.slice(0, 7));
-            
-            // Process hourly data (next 24 hours)
-            const now = new Date();
-            const hourlyForecast = data.hourly.time
-              .map((time, index) => ({
-                time,
-                hour: formatTime(time),
-                temp: data.hourly.temperature_2m[index],
-                weather_code: data.hourly.weather_code[index],
-                icon: getWeatherIcon(data.hourly.weather_code[index])
-              }))
-              .filter(hour => new Date(hour.time) > now)
-              .slice(0, 24);
-            setHourlyData(hourlyForecast);
-            
-            setLastUpdated(new Date().toLocaleTimeString());
-          } catch (error) {
-            console.error("Error fetching weather:", error);
-          } finally {
-            setLoading(false);
-          }
-        };
-
-        fetchWeather();
-        const interval = setInterval(fetchWeather, 600000); // Update every 10 mins
-        return () => clearInterval(interval);
-      }, [selectedState, selectedCity]);
-
-      if (loading) {
-        return (
-          <div className="container">
-            <div className="loading">
-              <h2>Loading weather data...</h2>
-              <p>Please wait while we fetch the latest information</p>
-            </div>
-          </div>
-        );
-      }
-
-      return (
-        <div className="container">
-          <div className="weather-header">
-            <h1>India Weather Forecast</h1>
-            <p>Time-wise weather updates in clean green/white design</p>
-          </div>
-          
-          <div className="location-selectors">
-            <div>
-              <label htmlFor="state-select">State</label>
-              <select 
-                id="state-select"
-                value={selectedState} 
-                onChange={(e) => {
-                  setSelectedState(e.target.value);
-                  setSelectedCity(Object.keys(indiaCities[e.target.value])[0]);
-                }}
-              >
-                {Object.keys(indiaCities).map(state => (
-                  <option key={state} value={state}>{state}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label htmlFor="city-select">City/Town</label>
-              <select 
-                id="city-select"
-                value={selectedCity} 
-                onChange={(e) => setSelectedCity(e.target.value)}
-              >
-                {Object.keys(indiaCities[selectedState] || {}).map(city => (
-                  <option key={city} value={city}>{city}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {weather && (
-            <div className="current-weather">
-              <h2>{selectedCity}, {selectedState}</h2>
-              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <span style={{fontSize: '3rem', marginRight: '15px'}}>{weather.icon}</span>
-                <div>
-                  <div className="temp-display">{Math.round(weather.temp)}°C</div>
-                  <div className="weather-desc">
-                    {weather.icon} {getWeatherDescription(weather.weather_code)}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="detail-grid">
-                <div className="detail-card">
-                  <div style={{fontSize: '1.4rem'}}>💧</div>
-                  <div>Humidity</div>
-                  <div className="detail-value">{weather.humidity}%</div>
-                </div>
-                <div className="detail-card">
-                  <div style={{fontSize: '1.4rem'}}>💨</div>
-                  <div>Wind Speed</div>
-                  <div className="detail-value">{Math.round(weather.wind)} km/h</div>
-                </div>
-                <div className="detail-card">
-                  <div style={{fontSize: '1.4rem'}}>🕒</div>
-                  <div>Last Updated</div>
-                  <div className="detail-value">{lastUpdated}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="tab-container">
-            <div 
-              className={`tab ${activeTab === 'daily' ? 'active' : ''}`}
-              onClick={() => setActiveTab('daily')}
-            >
-              7-Day Forecast
-            </div>
-            <div 
-              className={`tab ${activeTab === 'hourly' ? 'active' : ''}`}
-              onClick={() => setActiveTab('hourly')}
-            >
-              Hourly Forecast
-            </div>
-          </div>
-
-          {activeTab === 'daily' && forecast && (
-            <div className="forecast-container">
-              {forecast.map((day, index) => (
-                <div className="forecast-day" key={day.date}>
-                  <div className="day-name">{index === 0 ? 'Today' : day.day}</div>
-                  <div style={{fontSize: '1.5rem', margin: '5px 0'}}>{day.icon}</div>
-                  <div className="forecast-temp">
-                    <span style={{fontWeight: '600'}}>{Math.round(day.max_temp)}°</span> / {Math.round(day.min_temp)}°
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'hourly' && hourlyData && (
-            <div>
-              <h3>Next 24 Hours</h3>
-              <div className="hourly-forecast">
-                {hourlyData.map((hour, index) => (
-                  <div className="hour-card" key={index}>
-                    <div className="hour-time">{hour.hour}</div>
-                    <div style={{fontSize: '1.5rem', margin: '5px 0'}}>{hour.icon}</div>
-                    <div className="hour-temp">{Math.round(hour.temp)}°</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          <div className="last-updated">
-            Data updates automatically every 10 minutes
-          </div>
-        </div>
-      );
-    }
-
-    function getWeatherDescription(code) {
-      const weatherMap = {
-        0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
-        45: "Fog", 48: "Fog", 51: "Light drizzle", 53: "Moderate drizzle",
-        55: "Dense drizzle", 56: "Freezing drizzle", 57: "Freezing drizzle",
-        61: "Light rain", 63: "Moderate rain", 65: "Heavy rain",
-        80: "Light showers", 81: "Moderate showers", 82: "Violent showers",
-        95: "Thunderstorm", 96: "Thunderstorm", 99: "Thunderstorm"
-      };
-      return weatherMap[code] || "";
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<WeatherApp />);
-  </script>
-</body>
-</html>
+        return date.toLocale
